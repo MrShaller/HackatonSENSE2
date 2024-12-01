@@ -25,3 +25,6 @@ data/result.csv
 data/vectorized_data.csv
 data/client_dataset.json
 data/processed_data.csv
+
+uploads/
+results/

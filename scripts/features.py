@@ -96,8 +96,12 @@ def encoding(df, flag):
     encoder_path = os.path.join(ENCODER_DIR, 'label_encoders.pkl')
 
     # Категориальные столбцы
-    categorical_columns = ['grade_proof', 'position', 'age', 'country', 'city', 
-                       'key_skills', 'client_name', 'last_position', 'region']
+    if flag == 'train':
+        categorical_columns = ['grade_proof', 'position', 'age', 'country', 'city', 
+                                'key_skills', 'client_name', 'last_position', 'region']
+    else:
+        categorical_columns = ['position', 'age', 'country', 'city', 
+                               'key_skills', 'client_name', 'last_position', 'region']
 
     if flag == 'train':
         # Обучаем энкодеры и сохраняем их

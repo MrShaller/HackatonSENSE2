@@ -3,6 +3,7 @@ import pandas as pd
 import logging
 from scripts.preprocessing import preprocessing
 from scripts.features import features
+from scripts.salary import salaries
 
 # Настройка логгирования
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -60,6 +61,18 @@ def process_file(file_path, flag, emit_progress):
     except Exception as e:
         emit_progress(f"Ошибка постобработки: {e}")
         logger.error(f"Ошибка постобработки: {e}")
+        raise
+
+    # Обработка зарплат
+    emit_progress("Выполняется обработка зарплат...")
+    logger.info("Начало обработки зарплат.")
+    try:
+        df = salaries(df)
+        emit_progress("Обработка зарплат завершена.")
+        logger.info("Обработка зарплат завершена.")
+    except Exception as e:
+        emit_progress(f"Ошибка Обработка зарплати: {e}")
+        logger.error(f"Ошибка Обработка зарплат: {e}")
         raise
 
     # Генерация фич

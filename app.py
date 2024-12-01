@@ -65,4 +65,4 @@ def download_file(filename):
 
 if __name__ == "__main__":
     logger.info("Запуск приложения Flask...")
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True, allow_unsafe_werkzeug=True)
