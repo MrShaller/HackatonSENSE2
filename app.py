@@ -45,6 +45,9 @@ def upload_file():
     try:
         result_file_path = os.path.join(RESULT_FOLDER, "result.csv")
         process_file(input_file_path, "train", emit_progress=lambda msg: logger.info(f"Прогресс: {msg}"))
+
+        logger.info(f"Результирующий файл должен находиться по пути: {result_file_path}")
+        
         return jsonify({"status": "success", "filename": os.path.basename(result_file_path)})
     except Exception as e:
         logger.error(f"Ошибка при обработке файла: {e}")

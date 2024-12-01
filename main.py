@@ -77,7 +77,7 @@ def process_file(file_path, flag, emit_progress):
     # Сохранение результата
     emit_progress("Сохранение результата...")
     logger.info("Сохранение результата.")
-    output_path = "data/result.csv"
+    output_path = "results/result.csv"
     try:
         df.to_csv(output_path, index=False)
         emit_progress("Результат успешно сохранён.")
