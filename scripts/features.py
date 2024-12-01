@@ -98,10 +98,10 @@ def encoding(df, flag):
     # Категориальные столбцы
     if flag == 'train':
         categorical_columns = ['grade_proof', 'position', 'age', 'country', 'city', 
-                                'key_skills', 'client_name', 'last_position', 'region']
+                                'key_skills', 'client_name', 'last_position', 'region', 'years']
     else:
         categorical_columns = ['position', 'age', 'country', 'city', 
-                               'key_skills', 'client_name', 'last_position', 'region']
+                               'key_skills', 'client_name', 'last_position', 'region', 'years']
 
     if flag == 'train':
         # Обучаем энкодеры и сохраняем их
@@ -144,6 +144,29 @@ def encoding(df, flag):
 
 
 def features(df, flag):
+
+    # Пример словаря с оценкой престижности
+    prestige_scores = {
+    "ТОП Финтех": 1, "ТОП IT (сервисы, интеграторы)": 2, "ТОП Телеком": 3, "X5 Group": 4,
+    "Черкизово": 15, "BIOCAD": 5, "Hoff": 20, "Яндекс Райдтех": 6, "Крок": 7,
+    "Nebius": 8, "Click2Money": 30, "Pay365": 35, "OZON": 9, "РСХБ": 10, "Хеликон": 25,
+    "Cloud.ru": 22, "Самолёт": 18, "Яндекс Маркет": 11, "Яндекс.Cloud": 12,
+    "ТОП eCOM": 13, "IVI": 14, "Banki.ru": 16, "585 RPO": 40, "Сбер Еаптека": 21,
+    "Информзащита": 17, "Казино NDA": 50, "Onpoint": 45, "Food Rocket": 32, "Hawex": 48,
+    "Loymax": 28, "EggHeads": 27, "Брусника": 31, "Amdocs": 29, "ЮЛаки": 42, "Fun&Sun": 46,
+    "nil.foundation": 36, "Brand Analytics": 23, "М.Видео – Эльдорадо": 24,
+    "Equifax": 33, "Mercury": 34, "Прочее": 55, "МТС Банк (Аутсорс)": 26,
+    "МТС (Аутсорс)": 26, "Хантфлоу": 41, "Papa John's": 43, "Национальная Лотерея": 47,
+    "ЛитРес": 38, "InDrive": 37, "Просвещение": 19, "Совкомбанк": 39,
+    "Национальная Медиа Группа (МСБ)": 44, "ЦБ РФ": 8, "SRG Group": 49, "Этнамед": 51,
+    "Usetech": 52, "Яндекс. Такси": 10, "АО Азот-Взрыв": 53, "Glue up": 54,
+    "PIM Solutions": 56, "Metaship": 57, "Sitronics": 58, "4 Лапы": 59, "Ингосстрах": 60,
+    "Nestle": 6, "Auxo": 61, "Айтуби": 62, "Sunlight": 63, "Air Liquide": 64, "Т2": 65,
+    "Яндекс Академия": 66
+    }
+
+    # Добавляем новый столбец prestige на основе client_name
+    df['prestige'] = df['client_name'].map(prestige_scores)
 
     #1. Применяем функцию эйлерак DataFrame
     df = calculate_euler_similarity(df)
@@ -192,12 +215,11 @@ def features(df, flag):
         'last_position_set',
         'is_duplicate',
         'work_experience',
-        'years'
     ])
 
     #7. label-encoder
     # Преобразование категориальных признаков в численные
     df = encoding(df, flag)
 
-    
+
     return df

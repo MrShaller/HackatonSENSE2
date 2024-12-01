@@ -207,6 +207,20 @@ def replace_zeros_with_median4(dataframe, column):
     return dataframe
 
 
+# Функция для извлечения чисел из строки
+def extract_last_number2(salary):
+    if not isinstance(salary, str):
+        return 0  # Если значение пустое, возвращаем 0
+
+    # Находим все числа в строке
+    numbers = re.findall(r'\d+', salary)
+
+    # Если числа найдены, возвращаем последнее из них
+    if numbers:
+        return int(numbers[-1])
+
+    return 0  # Если чисел нет, возвращаем 0
+
 
 
 
@@ -227,5 +241,8 @@ def salaries(df):
 
     # Применяем функцию к DataFrame
     df = replace_zeros_with_median4(df, 'salary_2.0')
+
+    # Применяем функцию к столбцу 'salary'
+    df['salary'] = df['salary'].apply(extract_last_number2)
 
     return df

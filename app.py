@@ -44,7 +44,7 @@ def upload_file():
     # Обрабатываем файл через main.py
     try:
         result_file_path = os.path.join(RESULT_FOLDER, "result.csv")
-        process_file(input_file_path, "train", emit_progress=lambda msg: logger.info(f"Прогресс: {msg}"))
+        process_file(input_file_path, "test", emit_progress=lambda msg: logger.info(f"Прогресс: {msg}"))
 
         logger.info(f"Результирующий файл должен находиться по пути: {result_file_path}")
         

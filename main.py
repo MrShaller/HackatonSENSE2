@@ -4,6 +4,7 @@ import logging
 from scripts.preprocessing import preprocessing
 from scripts.features import features
 from scripts.salary import salaries
+from scripts.model import modeltesting
 
 # Настройка логгирования
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -86,13 +87,15 @@ def process_file(file_path, flag, emit_progress):
         emit_progress(f"Ошибка генерации фич: {e}")
         logger.error(f"Ошибка генерации фич: {e}")
         raise
+    # Тестируем модель
+    df_result = modeltesting(df)
 
     # Сохранение результата
     emit_progress("Сохранение результата...")
     logger.info("Сохранение результата.")
     output_path = "results/result.csv"
     try:
-        df.to_csv(output_path, index=False)
+        df_result.to_csv(output_path, index=False)
         emit_progress("Результат успешно сохранён.")
         logger.info(f"Результат успешно сохранён в {output_path}.")
     except Exception as e:
@@ -109,6 +112,6 @@ if __name__ == "__main__":
     logger.info("Запуск скрипта main.py напрямую.")
     # Тестовый запуск
     try:
-        process_file(file_path='data/client_dataset.json', flag='train', emit_progress=print)
+        process_file(file_path='data/client_dataset.json', flag='test', emit_progress=print)
     except Exception as e:
         logger.error(f"Ошибка выполнения: {e}")
