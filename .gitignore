@@ -1,0 +1,22 @@
+# Python
+*.pyc
+__pycache__/
+
+# VS Code
+.vscode/
+
+# Virtual environments
+venv/
+.env/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Log files
+*.log
+
+# GitHub
+*.DS_Store
+
+# Other temporary files
+*.swp

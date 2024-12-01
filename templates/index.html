@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ФИЦ: Хакатон</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img src="/static/images/fic_logo.png" alt="ФИЦ" class="logo-img">
+            </div>
+            <div class="icon">
+                <img src="/static/images/a_logo.png" alt="A" class="icon-img">
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <div class="team-name">Василеостровская община</div>
+            <div class="solution-name">Кейс №5</div>
+
+            <!-- File Upload Section -->
+            <div class="upload-section">
+                <h2>Загрузите файл для обработки</h2>
+                <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="fileInput" name="file" required>
+                    <button type="submit">Загрузить</button>
+                </form>
+                <div id="progress-bar-container" style="display: none;">
+                    <div id="progress-bar"></div>
+                </div>
+                <div id="result"></div>
+                <div id="download-section" style="display: none;">
+                    <p>Обработка успешно завершена! Результат можно скачать ниже:</p>
+                    <a id="download-button" class="download-btn" href="#" download>Скачать</a>
+                </div>
+            </div>
+            
+            
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">ФИЦ: ХАКАТОН</div>
+        <div class="year">2024</div>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
