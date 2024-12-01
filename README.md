@@ -65,7 +65,7 @@ HackatonSENSE2/
 ├── .gitignore
 ├── app.py
 ├── demo.mp4
-├── HackatonSENSE2.rar
+├── dockerfile
 ├── main.py
 └── requirements.txt
 ```
@@ -142,20 +142,9 @@ id,predict_proba
 ---
 ## Запуск проекта
 
-1. Установите необходимые библиотеки:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. Запустите сервер:
-   ```bash
-   python app.py
-   ```
-
-3. Перейдите в браузер и откройте страницу:
-   ```plaintext
-   http://127.0.0.1:5000/
-   ```
+1. Клонировать репозиторий git clone
+2. docker build -t my-flask-app .
+3. Зайти на http://127.0.0.1:5000/
 
 ---
 
