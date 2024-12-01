@@ -26,21 +26,21 @@
             <!-- File Upload Section -->
             <div class="upload-section">
                 <h2>Загрузите файл для обработки</h2>
-                <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                <form id="uploadForm">
                     <input type="file" id="fileInput" name="file" required>
                     <button type="submit">Загрузить</button>
                 </form>
-                <div id="progress-bar-container" style="display: none;">
-                    <div id="progress-bar"></div>
+
+                <div id="loading-container" style="display: none;">
+                    <div class="spinner"></div>
+                    <p id="loading-message">Обработка файла...</p>
                 </div>
-                <div id="result"></div>
-                <div id="download-section" style="display: none;">
-                    <p>Обработка успешно завершена! Результат можно скачать ниже:</p>
-                    <a id="download-button" class="download-btn" href="#" download>Скачать</a>
+
+                <div id="result" style="display: none;">
+                    <p>Обработка завершена. Результат доступен ниже:</p>
+                    <a id="downloadLink" class="download-btn" href="#" download>Скачать результат</a>
                 </div>
             </div>
-            
-            
         </div>
 
         <!-- Footer -->

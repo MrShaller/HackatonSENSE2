@@ -1,64 +1,101 @@
 import json
 import pandas as pd
-
+import logging
 from scripts.preprocessing import preprocessing
 from scripts.features import features
 
-'''
-Для того, чтобы запустить правильно на тестирование -> Поменять в if __name__ == main 
-train -> test
+# Настройка логгирования
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
 
-'''
-
-
-#поменять salary#поменять salary#поменять salary#поменять salary#поменять salary#поменять salary#поменять salary#поменять salary#поменять salary#поменять salary
-
-def process_file(file_path, flag):
+def process_file(file_path, flag, emit_progress):
     """
     Обрабатывает файл, переданный через Flask.
-    
+
     :param file_path: Путь к загруженному файлу
-    :return: Результат обработки
+    :param flag: Режим обработки ('train' или 'test')
+    :param emit_progress: Функция для отправки прогресса на фронтенд
+    :return: Путь к результату обработки
     """
+    emit_progress("Начало обработки файла...")
+    logger.info(f"Начало обработки файла: {file_path}")
+
+    # Загрузка файла
     try:
-        # Пример обработки: считаем количество строк в файле
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-
+            emit_progress("Файл успешно загружен.")
+            logger.info("Файл успешно загружен.")
     except Exception as e:
-        raise Exception(f"Error processing file: {e}")
-    
+        emit_progress(f"Ошибка чтения файла: {e}")
+        logger.error(f"Ошибка чтения файла: {e}")
+        raise
 
-    # Преобразуем в датафрейм
+    # Преобразование в DataFrame
+    emit_progress("Превращение файла в DataFrame...")
+    logger.info("Превращение файла в DataFrame.")
     df = pd.DataFrame(data)
 
-    #1. Обработка начального датафрейма #поменять salary#поменять salary#поменять salary#поменять salary#поменять salary
-    df = preprocessing(df, flag)
+    # Предобработка
+    emit_progress("Выполняется предобработка...")
+    logger.info("Начало предобработки.")
+    try:
+        df = preprocessing(df, flag)
+        emit_progress("Предобработка завершена.")
+        logger.info("Предобработка завершена.")
+    except Exception as e:
+        emit_progress(f"Ошибка предобработки: {e}")
+        logger.error(f"Ошибка предобработки: {e}")
+        raise
 
-    print('----------------------------------------------')
-    print('----------------------------------------------')
-    print('----------------------------------------------')
-    print('----------------------------------------------')
-    print('----------------------------------------------')
+    # Постобработка
+    emit_progress("Выполняется постобработка...")
+    logger.info("Начало постобработки.")
+    try:
+        df2 = pd.read_csv('data/postpreprocess_df.csv')
+        df = pd.merge(df, df2, left_on='client_name', right_on='short_name', how='left')
+        df = df.drop(columns={'Unnamed: 0', 'short_name'})
+        emit_progress("Постобработка завершена.")
+        logger.info("Постобработка завершена.")
+    except Exception as e:
+        emit_progress(f"Ошибка постобработки: {e}")
+        logger.error(f"Ошибка постобработки: {e}")
+        raise
 
-    #2. post_processing
-    df2 = pd.read_csv('data/postpreprocess_df.csv')
-    df = pd.merge(df, df2, left_on='client_name', right_on='short_name', how='left')
-    df = df.drop(columns={'Unnamed: 0', 'short_name'})
-    print('----------------------------------------------')
-    print('----------------------------------------------')
-    print('----------------------------------------------')
-    print('----------------------------------------------')
-    print('----------------------------------------------')
+    # Генерация фич
+    emit_progress("Генерация фич...")
+    logger.info("Начало генерации фич.")
+    try:
+        df = features(df, flag)
+        emit_progress("Генерация фич завершена.")
+        logger.info("Генерация фич завершена.")
+    except Exception as e:
+        emit_progress(f"Ошибка генерации фич: {e}")
+        logger.error(f"Ошибка генерации фич: {e}")
+        raise
 
-    #3. Feature eng
-    df = features(df, flag)
+    # Сохранение результата
+    emit_progress("Сохранение результата...")
+    logger.info("Сохранение результата.")
+    output_path = "data/result.csv"
+    try:
+        df.to_csv(output_path, index=False)
+        emit_progress("Результат успешно сохранён.")
+        logger.info(f"Результат успешно сохранён в {output_path}.")
+    except Exception as e:
+        emit_progress(f"Ошибка сохранения результата: {e}")
+        logger.error(f"Ошибка сохранения результата: {e}")
+        raise
 
-    print(df.columns)
+    emit_progress("Обработка завершена.")
+    logger.info("Обработка файла завершена.")
+    return output_path
 
-    return df.to_csv("data/result.csv", index=False)
 
-    
-    
 if __name__ == "__main__":
-    process_file(file_path='data/client_dataset.json', flag='train')
+    logger.info("Запуск скрипта main.py напрямую.")
+    # Тестовый запуск
+    try:
+        process_file(file_path='data/client_dataset.json', flag='train', emit_progress=print)
+    except Exception as e:
+        logger.error(f"Ошибка выполнения: {e}")
