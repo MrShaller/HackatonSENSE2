@@ -87,6 +87,8 @@ def process_file(file_path, flag, emit_progress):
         emit_progress(f"Ошибка генерации фич: {e}")
         logger.error(f"Ошибка генерации фич: {e}")
         raise
+
+    #df.to_csv('results/result3.csv', index=False)
     # Тестируем модель
     df_result = modeltesting(df)
 

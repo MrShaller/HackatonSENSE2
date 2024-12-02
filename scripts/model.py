@@ -27,6 +27,8 @@ def modeltesting(df):
         df = df.drop(columns=['grade_proof'])
     if 'Unnamed: 0' in df.columns:
         df = df.drop(columns=['Unnamed: 0'])
+    if 'years' in df.columns:
+        df = df.drop(columns=['years'])
 
     model, vectorizer = load_model()
     if model is None or vectorizer is None:

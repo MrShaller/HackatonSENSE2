@@ -6,6 +6,13 @@ from sklearn.preprocessing import LabelEncoder
 import pickle
 import os
 
+# Определяем базовый путь
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Путь к текущему файлу
+DATA_DIR = os.path.join(BASE_DIR, '..', 'data')  # Путь к папке data
+
+# Пути к файлам векторизаторов
+VECT1_PATH = os.path.join(DATA_DIR, 'vect1.pkl')
+VECT2_PATH = os.path.join(DATA_DIR, 'vect2.pkl')
 
 # Функция для нормализации текста
 def normalize_text_to_set(text):
@@ -62,17 +69,50 @@ def lemmatize_text(text):
 
 
 # Вычисление TF-IDF и косинусного сходства
-def calculate_tfidf_similarity(row):
+def calculate_tfidf_similarity(row, flag, **kwargs):
     texts = [row['position_lemmatized'], row['last_position_lemmatized']]
-    vectorizer1 = TfidfVectorizer()
-    tfidf_matrix = vectorizer1.fit_transform(texts)
+    
+    if flag == 'train':
+        vectorizer1 = TfidfVectorizer()
+        tfidf_matrix = vectorizer1.fit_transform(texts)
+        # Сохраняем векторизатор
+        with open(VECT1_PATH, 'wb') as f:
+            pickle.dump(vectorizer1, f)
+    elif flag == 'test':
+        # Загружаем векторизатор
+        if os.path.exists(VECT1_PATH):
+            with open(VECT1_PATH, 'rb') as f:
+                vectorizer1 = pickle.load(f)
+            tfidf_matrix = vectorizer1.transform(texts)
+        else:
+            raise FileNotFoundError(f"Векторизатор {VECT1_PATH} не найден.")
+    else:
+        raise ValueError("Неверное значение флага. Используйте 'train' или 'test'.")
+    
     return cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0, 0]
 
 # Функция для вычисления косинусного сходства между навыками и последней позицией
-def calculate_skills_last_pos_similarity(row):
+# Вычисление TF-IDF и косинусного сходства для навыков
+def calculate_skills_last_pos_similarity(row, flag, **kwargs):
     texts = [row['key_skills_lemmatized'], row['last_position_lemmatized']]
-    vectorizer2 = TfidfVectorizer()
-    tfidf_matrix = vectorizer2.fit_transform(texts)
+    
+    if flag == 'train':
+        vectorizer2 = TfidfVectorizer()
+        tfidf_matrix = vectorizer2.fit_transform(texts)
+        # Сохраняем векторизатор
+        with open(VECT2_PATH, 'wb') as f:
+            pickle.dump(vectorizer2, f)
+    elif flag == 'test':
+        # Загружаем векторизатор
+        if os.path.exists(VECT2_PATH):
+            with open(VECT2_PATH, 'rb') as f:
+                vectorizer2 = pickle.load(f)
+            tfidf_matrix = vectorizer2.transform(texts)
+        else:
+            raise FileNotFoundError(f"Векторизатор {VECT2_PATH} не найден.")
+    else:
+        raise ValueError("Неверное значение флага. Используйте 'train' или 'test'.")
+    
     return cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0, 0]
 
 
@@ -181,7 +221,7 @@ def features(df, flag):
     df['last_position_lemmatized'] = df['last_position'].apply(lemmatize_text)
 
     # Применяем вычисление косинусного сходства
-    df['pos-last_pos'] = df.apply(calculate_tfidf_similarity, axis=1)
+    df['pos-last_pos'] = df.apply(calculate_tfidf_similarity, axis=1, flag=flag)
 
 
     # Применяем лемматизацию к столбцам 'key_skills' и 'last_position'
@@ -189,7 +229,7 @@ def features(df, flag):
     df['last_position_lemmatized'] = df['last_position'].apply(lemmatize_text)
 
     # Применяем функцию для расчета косинусного сходства
-    df['skills-last_pos'] = df.apply(calculate_skills_last_pos_similarity, axis=1)
+    df['skills-last_pos'] = df.apply(calculate_skills_last_pos_similarity, axis=1, flag=flag)
 
     # Удаляем временные столбцы, если они больше не нужны
     df = df.drop(columns=['key_skills_lemmatized', 'last_position_lemmatized'])
